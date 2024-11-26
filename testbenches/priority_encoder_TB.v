@@ -4,9 +4,23 @@ module priority_encoder_TB();
 
     priority_encoder DUT(.in(dec), .out(enc));
 
+    initial begin
+        $monitor("%d", enc);
+    end
+
     initial begin : BLOCO
-        dec = 5'b10000;
-        #1 $display("%d", enc);
+        integer i;
+        dec = 255'b0;
+        dec[255] = 1'b1;
+        for (i = 255; i > 0; i = i-1) begin
+            #1
+            if (enc != i) begin
+                $display("Resposta %d errada!", enc);
+            end
+            dec[i] = 1'b0;
+            dec[i-1] = 1'b1;
+        end
+
         #1 $finish();
     end
 endmodule
