@@ -11,9 +11,10 @@ module core (input[511:0] linha_cache, input[63:0] endereco, input clk, output t
     reg[TAM_ENDERECO-1 : 0] endereco_buffer;
     reg[NUM_CLUSTERS-1 : 0] bitmap_buffer;
     reg[TAM_HASH-1 : 0] hash_buffer;
-    reg bloq, we, valida, zero;
+    reg bloq, valida;
     reg[2:0] saida_encoder;
 
+    wire zero;
     wire[NUM_CLUSTERS-1 : 0] entrada_bitmap;
     wire[NUM_CLUSTERS-1 : 0] bitmap_processado;
     wire[TAM_HASH-1 : 0] saida_primeira_hash;
@@ -25,21 +26,20 @@ module core (input[511:0] linha_cache, input[63:0] endereco, input clk, output t
                     .hash_atual(hash_buffer), .bloquear(bloq), .saida_valida(valida));
     
     xor_hash primeira_hash(.in(linha_cache), .out(saida_primeira_hash));
-    xor_hash segunda_hash(.in(linha_cache), .out(saida_segunda_hash));
+    xor_hash segunda_hash(.in(linha_cache), .out(saida_segunda_hash)); // Mudar segunda hash
     encoder priority_encoder_8(.in(bitmap_buffer), .out(saida_encoder));
 
     assign trava = bloq;
     assign entrada_bitmap = primeira_matriz[saida_primeira_hash];
+    assign bitmap_processado = bitmap_buffer & ~(1 << saida_encoder);
+    assign zero = ~(|bitmap_buffer) | (segunda_matriz[saida_encoder][hash_buffer]);
 
-    always @(posedge clk) begin
-        if (zero == 1'b1 && valida == 1'b1) begin
-            // Escrever na memoria
-            zero <= ~|bitmap_buffer;
-        end else begin
-            if (segunda_matriz[saida_encoder][saida_segunda_hash] == 1'b1) begin
-                // Escrever na memoria
-                zero <= 1'b1;
-            end
+    always @(posedge clk) begin : BLOCO
+        reg tmp;
+
+        tmp = segunda_matriz[saida_encoder][saida_segunda_hash];
+        if (tmp == 1'b1 && valida == 1'b1) begin
+            // Escrever na memoria com endereco_buffer
         end
     end
 endmodule

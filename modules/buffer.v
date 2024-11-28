@@ -38,11 +38,13 @@ module buffer #(parameter NUM_CLUSTERS = 5, TAM_ENDERECO = 64, TAM_HASH_DOIS = 8
             enderecos[0] <= endereco_novo;
             bitmaps[0] <= bitmap_novo;
             hash[0] <= hash_nova;
+            flags[0] <= 1'b1;
 
             for (i = TAM_BUFFER-1; i > 0; i = i+1) begin
                 enderecos[i] <= enderecos[i-1];
                 bitmaps[i] <= bitmaps[i-1];
                 hash[i] <= hash[i-1];
+                flags[i] <= flags[i-1];
             end
 
             bloquear_entrada <= 1'b0;
