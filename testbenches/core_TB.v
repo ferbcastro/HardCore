@@ -3,11 +3,15 @@ module core_TB ();
     reg[511 : 0] linha_cache;
     reg[63 : 0] endereco;
 
+    core DUT(.linha_cache(linha_cache), .endereco(endereco), .clk(clk), .reset(reset));
+
     initial begin
-        $dumpfile();
-        $dumpvars();
-        $readmemh();
-        $readmemh();
+        // Carrega primeira matriz de assinaturas '[HASH][CLUSTER]'
+        $readmemh("./memory_files/primeira_matriz.mem", DUT.primeira_matriz);
+        // Carrega segunda matriz de assinaturas '[CLUSTER][HASH]'
+        $readmemh("./memory_files/segunda_matriz.mem", DUT.segunda_matriz);
+        $dumpfile("core_TB.vcd");
+        $dumpvars(2, DUT);
         $monitor();
     end
 

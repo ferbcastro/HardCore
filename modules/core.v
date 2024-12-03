@@ -17,11 +17,10 @@ module core (input[511:0] linha_cache, input[63:0] endereco, input clk, reset);
     wire[$clog2(NUM_CLUSTERS)-1 : 0] saida_encoder; // variavel de enderecamento
 
     circular_buffer #(.NUM_CLUSTERS(NUM_CLUSTERS)) buffer 
-            (.suspeito(suspeito), .zero(zero), .clk(clk), .reset(reset), 
-             .bitmap_novo(entrada_bitmap), .endereco_novo(endereco), 
-             .hash_nova(saida_segunda_hash), .bitmap_atualizado(bitmap_processado), 
-             .bitmap_atual(bitmap_buffer), .endereco_atual(endereco_buffer), 
-             .hash_atual(hash_buffer), .saida_valida(valida));
+                     (.suspeito(suspeito), .zero(zero), .clk(clk), .reset(reset), .bitmap_novo(entrada_bitmap), 
+                      .endereco_novo(endereco), .hash_nova(saida_segunda_hash), .bitmap_atualizado(bitmap_processado), 
+                      .bitmap_atual(bitmap_buffer), .endereco_atual(endereco_buffer), .hash_atual(hash_buffer), 
+                      .saida_valida(valida));
     
     xor_hash primeira_hash(.in(linha_cache), .out(saida_primeira_hash));
     add_hash segunda_hash(.in(linha_cache), .out(saida_segunda_hash));
