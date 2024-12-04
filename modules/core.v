@@ -1,10 +1,11 @@
-module core (input[511:0] linha_cache, input[63:0] endereco, input clk, reset);
+module core (input[511:0] linha_cache, input[1:0] endereco, input clk, reset);
     parameter NUM_CLUSTERS = 8,
               AMPLITUDE_HASH = 256,
               TAM_HASH = $clog2(AMPLITUDE_HASH),
-              TAM_ENDERECO = 64,
+              TAM_ENDERECO = 2,
               TAM_PAGINA = 4096,
-              AMPLITUDE_ENDERECOS = (1 << (TAM_ENDERECO-$clog2(TAM_PAGINA)));
+              AMPLITUDE_ENDERECOS = 4;
+              // AMPLITUDE_ENDERECOS = (1 << (TAM_ENDERECO-$clog2(TAM_PAGINA)));
 
     reg[NUM_CLUSTERS-1 : 0] primeira_matriz[0 : AMPLITUDE_HASH-1];
     reg[AMPLITUDE_HASH-1 : 0] segunda_matriz[0 : NUM_CLUSTERS-1];
@@ -34,12 +35,12 @@ module core (input[511:0] linha_cache, input[63:0] endereco, input clk, reset);
     always @(posedge clk) begin
         if (reset == 1'b1) begin
             resultados <= 0;
-        end else begin
+        end else if (valida == 1'b1) begin
             if (zero == 1'b1) begin
-                resultados[endereco[63 -: 52]] <= 1'b0;
+                resultados[endereco] <= 1'b0;
             end else begin
                 if (suspeito == 1'b1) begin
-                    resultados[endereco[63 -: 52]] <= 1'b1;
+                    resultados[endereco] <= 1'b1;
                 end
             end
         end

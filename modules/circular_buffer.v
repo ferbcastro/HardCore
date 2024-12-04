@@ -1,4 +1,4 @@
-module circular_buffer #(parameter NUM_CLUSTERS = 8, TAM_ENDERECO = 64, TAM_HASH_DOIS = 8)
+module circular_buffer #(parameter NUM_CLUSTERS = 8, TAM_ENDERECO = 2, TAM_HASH_DOIS = 8)
 (
     input suspeito, zero, clk, reset,
     input wire[NUM_CLUSTERS-1 : 0] bitmap_novo, 
