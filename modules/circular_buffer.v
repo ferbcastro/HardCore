@@ -22,6 +22,9 @@ module circular_buffer #(parameter NUM_CLUSTERS = 8, TAM_ENDERECO = 2, TAM_HASH_
 
     always @(posedge clk) begin
         if (reset == 1'b1) begin
+            bitmaps <= 0;
+            hash <= 0;
+            enderecos <= 0;
             ocupacao <= 5'b0;
             ini <= 5'b0;
             fim <= 6'b0;
